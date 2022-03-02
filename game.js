@@ -3,6 +3,7 @@ import { player1, player2 } from './player.js'
 import createElement from './createElement.js'
 import getRandom from './getRandom.js'
 import createReloadButton from './createReloadButton.js'
+import playerWins from './playerWins.js'
 
 class Game {
     $arenas
@@ -16,17 +17,6 @@ class Game {
         foot: 10,
     }
     ATTACK = ['head', 'body', 'foot']
-
-    playerWins = (name) => {
-        const $winTitle = createElement('div', 'loseTitle')
-        if (name){
-            $winTitle.innerText = name + ' Wins!'
-        } else {
-            $winTitle.innerText = 'Draw'
-        }
-
-        return $winTitle
-    }
 
     start = () => {
         this.$arenas = document.querySelector('.arenas')
@@ -82,11 +72,13 @@ class Game {
         }
         }
         if (player1.hp === 0 && player1.hp < player2.hp){
-            this.$arenas.append(this.playerWins(player2.name))
+            this.$arenas.append(playerWins(player2.name))
+            this.logMessage('end', player2, player1)
         } else if (player2.hp === 0 && player2.hp < player1.hp){
-            this.$arenas.append(this.playerWins(player1.name))
+            this.$arenas.append(playerWins(player1.name))
+            this.logMessage('end', player1, player2)
         } else if (player1.hp === 0 && player2.hp === 0){
-            this.$arenas.append(this.playerWins())
+            this.$arenas.append(playerWins())
             draw ('draw')
         }
 
@@ -102,7 +94,7 @@ class Game {
 
     generatelogs = (type, player1, player2) => {
 
-        let text = logs [type][getRandom(14)-1]
+        let text = logs [type][getRandom(14)]
         .replace('[playerDefence]', player2.name)
         .replace('[playerKick]', player1.name)
         const el = `<p>${text}</p>`
@@ -135,7 +127,12 @@ class Game {
                 output = logs.end[getRandom(3)]
             break
         }
-        output = output.replace('[time]',dateString).replace('[player1]',player1.name).replace('[player2]', player2.name)
+        output = output
+        .replace('[time]',dateString)
+        .replace('[player1]',player1.name)
+        .replace('[player2]', player2.name)
+        .replace('[playerWins]',player1.name)
+        .replace('[playerLose]', player2.name)
 
         const finalString = `<p>${output}</p>`
         this.$chat.insertAdjacentHTML('afterbegin', finalString)

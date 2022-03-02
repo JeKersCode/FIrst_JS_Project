@@ -1,3 +1,6 @@
+import { player1, player2 } from "./player.js"
+import createReloadButton from "./createReloadButton.js"
+
 function showResult (){
     if (player1.hp === 0 || player2.hp === 0){
         const $reloadButton = createReloadButton()
